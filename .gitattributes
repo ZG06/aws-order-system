@@ -1,0 +1,3 @@
+# Treat all Terraform files as configuration so they don't count toward language statistics
+*.tf linguist-detectable=false
+*.tfvars linguist-detectable=false
