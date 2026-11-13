@@ -1,0 +1,35 @@
+name: Compile, Test, and Deploy Order System (GitHub AWS OIDC)
+
+on:
+  push:
+    branches: [feat/cicd]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Fetch repository source code
+      - name: Checkout Code
+        uses: actions/checkout@v7
+
+      # Step 2: Setup Go and run unit tests
+      - name: Setup Go
+        uses: actions/setup-go@v7
+        with:
+          go-version: '1.27.2'
+
+      - name: Run Go Tests
+        run: go test -v ./...
+
+      # Step 3: Authenticate
+      - name: Configure AWS Credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_IAM_ROLE }}
+      
