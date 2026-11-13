@@ -8,6 +8,13 @@ terraform {
 
   required_version = ">= 1.2"
 
+  # Store terraform state file in an S3 bucket 
+  backend "s3" {
+    bucket = "order-system-terraform-state-storage"
+    key    = "terraform.tfstate"
+    region = "us-east-1"
+    encrypt = true
+  }
 }
 
 provider "aws" {
