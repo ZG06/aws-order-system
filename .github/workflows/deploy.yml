@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [feat/cicd]
+    branches: [main]
 
 permissions:
   id-token: write
