@@ -37,7 +37,7 @@ A serverless microservice built with Go, AWS Lambda, DynamoDB, and API Gateway. 
 
 ### CI/CD Security & Least-Privilege IAM
 - **Keyless Authentication (OIDC):** GitHub Actions authenticates to AWS via OpenID Connect identity provider scoped strictly to this repository, eliminating the need for `AWS_ACCESS_KEY_ID` secrets.
-- **Least-Privilege Policy Generation:** Rather than using broad managed policies like `AdministratorAccess`, `terraform/iac-bootstrap/resources/policy.json` was created by tracking calls with AWS CloudTrail and `[iamlive](https://github.com/iann0036/iamlive/)`, then tightening resource ARNs to this project's specific resources.
+- **Least-Privilege Policy Generation:** Rather than using broad managed policies like `AdministratorAccess`, `terraform/iac-bootstrap/resources/policy.json` was created by tracking calls with AWS CloudTrail and [iamlive](https://github.com/iann0036/iamlive/), then tightening resource ARNs to this project's specific resources.
 
 ---
 
