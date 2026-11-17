@@ -29,10 +29,15 @@ A serverless microservice built with Go, AWS Lambda, DynamoDB, and API Gateway. 
 
 ## 🔒 Security & Networking Design
 
-* **Serverless Model:** Lambda runs on the AWS public network without having to deploy VPC and manually manage server security (Networking, OS updates, Security Patches). In addition to that, running serverless minimizes the cold-start latencies and infrastructure costs.
-* **Principle of Least Privilege:**
-  * Lambda is only allowed to execute `dynamodb:GetItem`, `dynamodb:PutItem`, and `dynamodb:UpdateItem` operation on the specific DynamoDB table, which only contains the items in stock.
-  * CloudWatch permission are restricted to logging actions: `logs:CreateLogGroup`, `logs:CreateLogStream`, `logs:PutLogEvents`.
+### Application & Runtime Security
+- **VPC-Free Serverless Architecture:** Lambda runs on the AWS public network without having to deploy VPC and manually manage server security (Networking, OS updates, Security Patches). In addition to that, running code on Golang minimizes the cold-start latencies.
+- **Principle of Least Privilege:**
+  - **DynamoDB:** Only allowed to execute `dynamodb:GetItem`, `dynamodb:PutItem`, and `dynamodb:UpdateItem` operations on the specific DynamoDB table (used for product inventory tracking).
+  - **CloudWatch Logs:** Restricted to logging actions: `logs:CreateLogGroup`, `logs:CreateLogStream`, `logs:PutLogEvents`.
+
+### CI/CD Security & Least-Privilege IAM
+- **Keyless Authentication (OIDC):** GitHub Actions authenticates to AWS via OpenID Connect identity provider scoped strictly to this repository, eliminating the need for `AWS_ACCESS_KEY_ID` secrets.
+- **Least-Privilege Policy Generation:** Rather than using broad managed policies like `AdministratorAccess`, `terraform/iac-bootstrap/resources/policy.json` was created by tracking calls with AWS CloudTrail and `[iamlive](https://github.com/iann0036/iamlive/)`, then tightening resource ARNs to this project's specific resources.
 
 ---
 
