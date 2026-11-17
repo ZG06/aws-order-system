@@ -123,20 +123,34 @@ After recompiling the binary, updating `function.zip`, and re-applying Terraform
 
 ## 🚀 Deployment Instructions
 
-### 1. Build the Go Executable
+### 1. Create an S3 Bucket for Terraform State Storage
 ```bash
-GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bootstrap terraform/modules/lambda/resources/main.go
-zip modules/lambda/resources/function.zip bootstrap
+aws s3api create-bucket --bucket order-system-terraform-state-storage --region us-east-1
+aws s3api put-bucket-versioning --bucket order-system-terraform-state-storage --versioning-configuration Status=Enabled
 ```
 
-### 2. Provision Infrastructure via Terraform
+### 2. Create Terraform Roles and Policies
+
 ```bash
-cd terraform
+cd terraform/iac-bootstrap
 terraform init
 terraform apply
 ```
 
-### 3. Test Execution
+### 3. Build the Go Executable
+```bash
+cd ..
+GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bootstrap modules/lambda/resources/main.go
+zip modules/lambda/resources/function.zip bootstrap && rm bootstrap
+```
+
+### 4. Provision Infrastructure via Terraform
+```bash
+terraform init
+terraform apply
+```
+
+### 5. Test Execution
 ```bash
 curl -X POST <API_GATEWAY_ENDPOINT_URL>/order \
   -H "Content-Type: application/json" \
