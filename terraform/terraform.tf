@@ -41,7 +41,8 @@ module "iam" {
   # Pass root variables into module parameters
   project_name       = var.project_name
   environment        = var.environment
-  dynamodb_table_arn = module.dynamodb.dynamodb_table_arn
+  dynamodb_inventory_table_arn = module.dynamodb.dynamodb_inventory_table_arn
+  dynamodb_orders_table_arn = module.dynamodb.dynamodb_orders_table_arn
 }
 
 module "lambda" {
@@ -51,7 +52,8 @@ module "lambda" {
   project_name        = var.project_name
   environment         = var.environment
   lambda_role_arn     = module.iam.lambda_role_arn
-  dynamodb_table_name = module.dynamodb.dynamodb_table_name
+  dynamodb_inventory_table_name = module.dynamodb.dynamodb_inventory_table_name
+  dynamodb_orders_table_name = module.dynamodb.dynamodb_orders_table_name
 }
 
 module "apigateway" {

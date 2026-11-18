@@ -8,7 +8,12 @@ variable "environment" {
   description = "Execution environment passed from root module"
 }
 
-variable "dynamodb_table_arn" {
+variable "dynamodb_inventory_table_arn" {
   type = string
-  description = "ARN of the DynamoDB table"
+  description = "ARN of the DynamoDB inventory table"
+}
+
+variable "dynamodb_orders_table_arn" {
+  type = string
+  description = "ARN of the DynamoDB orders table"
 }

@@ -23,12 +23,17 @@ data "aws_iam_policy_document" "lambda_permissions" {
     actions   = [
         "dynamodb:GetItem",
         "dynamodb:UpdateItem",
-        "dynamodb:PutItem"
     ]
-    resources = [var.dynamodb_table_arn]
+    resources = [var.dynamodb_inventory_table_arn]
     effect    = "Allow"
   }
-
+  statement {
+    actions   = [
+      "dynamodb:PutItem"
+    ]
+    resources = [var.dynamodb_orders_table_arn]
+    effect    = "Allow"
+  }
   statement {
     actions   = [
         "logs:CreateLogGroup",

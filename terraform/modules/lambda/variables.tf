@@ -13,7 +13,12 @@ variable "lambda_role_arn" {
   description = "ARN of the Lambda execution role"
 }
 
-variable "dynamodb_table_name" {
+variable "dynamodb_inventory_table_name" {
   type = string
-  description = "Name of the DynamoDB table"
+  description = "Name of the DynamoDB inventory table"
+}
+
+variable "dynamodb_orders_table_name" {
+  type = string
+  description = "Name of the DynamoDB orders table"
 }

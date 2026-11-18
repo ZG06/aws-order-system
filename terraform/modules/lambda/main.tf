@@ -9,7 +9,8 @@ resource "aws_lambda_function" "order_processor" {
 
   environment {
     variables = {
-        TABLE_NAME = var.dynamodb_table_name
+        INVENTORY_TABLE_NAME = var.dynamodb_inventory_table_name,
+        ORDERS_TABLE_NAME = var.dynamodb_orders_table_name
     }
   }
 }
