@@ -11,6 +11,10 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
+    env:
+      # Maps the value of the GitHub secret to the alerts_email variable in variables.tf
+      TF_VAR_alerts_email: ${{ secrets.ALERTS_EMAIL }}
+
     steps:
       # Step 1: Fetch repository source code
       - name: Checkout Code

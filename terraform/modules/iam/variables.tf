@@ -9,11 +9,21 @@ variable "environment" {
 }
 
 variable "dynamodb_inventory_table_arn" {
-  type = string
+  type        = string
   description = "ARN of the DynamoDB inventory table"
 }
 
+variable "dynamodb_orders_table_stream_arn" {
+  type        = string
+  description = "Stream ARN of the DynamoDB orders table"
+}
+
 variable "dynamodb_orders_table_arn" {
-  type = string
+  type        = string
   description = "ARN of the DynamoDB orders table"
+}
+
+variable "sns_topic_arn" {
+  type        = string
+  description = "ARN of the SNS topic"
 }

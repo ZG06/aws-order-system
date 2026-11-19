@@ -9,8 +9,8 @@ resource "aws_lambda_function" "order_processor" {
 
   environment {
     variables = {
-        INVENTORY_TABLE_NAME = var.dynamodb_inventory_table_name,
-        ORDERS_TABLE_NAME = var.dynamodb_orders_table_name
+      INVENTORY_TABLE_NAME = var.dynamodb_inventory_table_name,
+      ORDERS_TABLE_NAME    = var.dynamodb_orders_table_name
     }
   }
 }
@@ -22,15 +22,15 @@ resource "aws_cloudwatch_log_group" "lambda_log_group" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "lambda_error_alarm" {
-  alarm_name = "${var.project_name}-lambda-errors-${var.environment}"
+  alarm_name          = "${var.project_name}-lambda-errors-${var.environment}"
   comparison_operator = "GreaterThanThreshold"
-  evaluation_periods = 1
-  period = 300
-  metric_name = "Errors"
-  namespace = "AWS/Lambda"
-  statistic = "Sum"
-  threshold = 1
-  alarm_description = "Triggers when Lambda execution encounters unhandled failures"
+  evaluation_periods  = 1
+  period              = 300
+  metric_name         = "Errors"
+  namespace           = "AWS/Lambda"
+  statistic           = "Sum"
+  threshold           = 1
+  alarm_description   = "Triggers when Lambda execution encounters unhandled failures"
 
   dimensions = {
     FunctionName = aws_lambda_function.order_processor.function_name

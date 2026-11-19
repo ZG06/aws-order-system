@@ -16,3 +16,8 @@ variable "project_name" {
   default     = "order-system"
 }
 
+variable "alert_email" {
+  type        = string
+  description = "Email address for order alerts"
+  sensitive   = true
+}

@@ -9,16 +9,16 @@ variable "environment" {
 }
 
 variable "lambda_role_arn" {
-  type = string
+  type        = string
   description = "ARN of the Lambda execution role"
 }
 
 variable "dynamodb_inventory_table_name" {
-  type = string
+  type        = string
   description = "Name of the DynamoDB inventory table"
 }
 
 variable "dynamodb_orders_table_name" {
-  type = string
+  type        = string
   description = "Name of the DynamoDB orders table"
 }

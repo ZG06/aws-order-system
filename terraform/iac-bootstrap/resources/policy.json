@@ -79,7 +79,10 @@
                 "dynamodb:PutItem",
                 "dynamodb:DeleteItem"
             ],
-            "Resource": "arn:aws:dynamodb:us-east-1:049584025934:table/order-system-inventory-*"
+            "Resource": [
+                "arn:aws:dynamodb:us-east-1:049584025934:table/order-system-inventory-*",
+                "arn:aws:dynamodb:us-east-1:049584025934:table/order-system-orders-*"
+            ]
         },
         {
             "Effect": "Allow",
@@ -131,9 +134,47 @@
             "Resource": "arn:aws:iam::049584025934:role/order-system-*",
             "Condition": {
                 "StringEquals": {
-                    "iam:PassedToService": "lambda.amazonaws.com"
+                    "iam:PassedToService": [
+                        "lambda.amazonaws.com",
+                        "pipes.amazonaws.com"
+                    ]
                 }
             }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sns:GetTopicAttributes",
+                "sns:GetSubscriptionAttributes",
+                "sns:SetSubscriptionAttributes",
+                "sns:Subscribe",
+                "sns:Unsubscribe",
+                "sns:DeleteTopic",
+                "sns:SetTopicAttributes",
+                "sns:CreateTopic",
+                "sns:ListTagsForResource",
+                "sns:TagResource",
+                "sns:UntagResource"
+            ],
+            "Resource": "arn:aws:sns:us-east-1:049584025934:order-system-*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "pipes:CreatePipe",
+                "pipes:DeletePipe",
+                "pipes:DescribePipe",
+                "pipes:ListTagsForResource",
+                "pipes:TagResource",
+                "pipes:UntagResource",
+                "pipes:UpdatePipe"
+            ],
+            "Resource": "arn:aws:pipes:us-east-1:049584025934:pipe/order-system-*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "pipes:ListPipes",
+            "Resource": "*"
         }
     ]
 }
