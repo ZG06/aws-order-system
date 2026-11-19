@@ -13,7 +13,7 @@ jobs:
 
     env:
       # Maps the value of the GitHub secret to the alerts_email variable in variables.tf
-      TF_VAR_alerts_email: ${{ secrets.ALERTS_EMAIL }}
+      TF_VAR_alert_email: ${{ secrets.ALERTS_EMAIL }}
 
     steps:
       # Step 1: Fetch repository source code
