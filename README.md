@@ -6,7 +6,7 @@ A serverless microservice built with Go, AWS Lambda, DynamoDB, and API Gateway. 
 
 ## 🏗 Architecture Overview
 
-![alt text](https://i.imgur.com/pWaVgXR.png "An AWS diagram showing the cloud infrastructure of the project")
+![alt text](https://i.imgur.com/G2hOc0H.jpeg "An AWS diagram showing the cloud infrastructure of the project")
 
 ### System Flow
 1. **API Gateway (Edge Layer):** Acts as an entry bridge (`POST /order`), filtering out unmapped methods (`GET`, `PUT`) to prevent unnecessary compute invocation.
