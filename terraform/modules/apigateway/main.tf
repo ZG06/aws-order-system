@@ -24,6 +24,14 @@ resource "aws_apigatewayv2_stage" "name" {
   api_id      = aws_apigatewayv2_api.http_api.id
   name        = "$default"
   auto_deploy = true
+
+  # Set custom rate limiting
+  default_route_settings {
+    # Set the bucket to hold 10 tokens
+    throttling_burst_limit = 10
+    # Add 5 tokens to the bucket every second
+    throttling_rate_limit = 5
+  }
 }
 
 # Grant API Gateway permission to call 'lambda:InvokeFunction' on the Lambda function

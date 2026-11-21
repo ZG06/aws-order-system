@@ -46,7 +46,10 @@ data "aws_iam_policy_document" "oidc" {
 
     condition {
       test     = "StringLike"
-      values   = ["repo:ZG06@92268833/aws-order-system@1454556221:ref:refs/heads/*"]
+      values   = [
+        "repo:ZG06@92268833/aws-order-system@1454556221:ref:refs/heads/master",
+        "repo:ZG06@92268833/aws-order-system@1454556221:pull_request"
+      ]
       variable = "token.actions.githubusercontent.com:sub"
     }
   }
