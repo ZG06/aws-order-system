@@ -6,14 +6,15 @@ A serverless microservice built with Go, AWS Lambda, DynamoDB, and API Gateway. 
 
 ## 🏗 Architecture Overview
 
-![AWS Serverless Architecture Diagram](https://i.imgur.com/G2hOc0H.jpeg "An AWS diagram showing the cloud infrastructure of the project")
+![AWS Serverless Architecture Diagram](https://i.imgur.com/pzp9Frs.jpeg "An AWS diagram showing the cloud infrastructure of the project")
 
 ### System Flow
 1. **API Gateway (Edge Layer):** Acts as an entry bridge (`POST /order`), filtering out unmapped methods (`GET`, `PUT`) to prevent unnecessary compute invocation.
 2. **Lambda Pre-Validation (Compute Layer):** Ensures that the data provided by the API Gateway is valid (`product_id`, `quantity`), otherwise returns an error immediately. Then connects to DynamoDB to get/put/update an item and redirects the response to the API Gateway.
-3. **DynamoDB Transaction (Data Layer):** Stores the items in stock and orders and executes an atomic conditional deduction. If stock is insufficient or order placement fails, DynamoDB rejects the write and Lambda return an error.
+3. **DynamoDB Transaction (Data Layer):** Stores the items in stock and orders and executes an atomic conditional deduction. If stock is insufficient or order placement fails, DynamoDB rejects the write and Lambda returns an error.
 4. **SNS Email Order Notifications:** Sends an email to the administrator when a new order is received.
-5. **Observability:** Structured JSON logs stream to CloudWatch Logs (14-day retention), while CloudWatch Alarms monitor runtime errors.
+5. **SQS Dead-Letter Notifications:** If order confirmation email delivery fails after 3 retry attempts, EventBridge Pipe will move the failed stream event to SQS DLQ, which triggers CloudWatch Alarm to notify the admin about the failed delivery.
+6. **Observability:** Structured JSON logs stream to CloudWatch Logs (14-day retention), while CloudWatch Alarms monitor runtime errors.
 
 ---
 
@@ -23,7 +24,7 @@ A serverless microservice built with Go, AWS Lambda, DynamoDB, and API Gateway. 
 * **API Routing:** AWS API Gateway
 * **Item validation:** AWS Lambda
 * **Database:** AWS DynamoDB
-* **Notifications:** AWS DynamoDB Streams, AWS EventBridge Pipe, AWS SNS
+* **Notifications:** AWS DynamoDB Streams, AWS EventBridge Pipe, AWS SNS, AWS SQS Dead-Letter Queue
 * **Infrastructure as Code:** Terraform (modules: `dynamodb`, `iam`, `lambda`, `apigateway`, `pipes`, `sns`)
 * **Observability:** Go `log/slog`, CloudWatch Logs, CloudWatch Metric Alarms
 
@@ -55,8 +56,9 @@ The Free Tier partially allows the free-of-charge usage for the first 6 months.
 * **DynamoDB Streams Reads:** 2.5M read requests/month.
 * **API Gateway:** 1,000,000 HTTP API calls/month (first 6 months).
 * **EventBridge Pipes:** No free tier available.
-* **SNS Publish Requests:** 1,000,000 free requests/month
-* **SNS Email Deliveries:** 1,000 free email notification per month.
+* **SNS Publish Requests:** 1,000,000 free requests/month.
+* **SNS Email Deliveries:** 1,000 free email notification/month.
+* **SQS DLQ:** 1,000,000 free requests/month.
 
 ### Post-Free Tier Monthly Cost Projections
 
@@ -70,6 +72,7 @@ The Free Tier partially allows the free-of-charge usage for the first 6 months.
 | **EventBridge Pipes** | $0.04 | $0.40 | $0.40 per million requests |
 | **SNS Publish Requests** | $0.00 | $0.00 | Under 1M/month free tier ($0.50 per 1M requests above that allowance) |
 | **SNS Email Deliveries** | $1.98 | $19.98 | Under 1,000 emails/month free tier ($2.00 per 100,000 above that allowance) |
+| **SQS Dead-Letter Queue (DLQ)** | $0.00 | $0.00 | Under 1,000,000 requests/month free tier ($0.40 per 1M above that allowance) |
 | **Total Estimated Cost** | **~$3.80 / month** | **~$24 / month** | |
 
 The pricing above is specified for the us-east-1 region and is valid as of: `November 11, 2026`.
@@ -89,20 +92,15 @@ resource "aws_cloudwatch_log_group" "lambda_log_group" {
 
 ### Metrics & Alarming
 
-A metric alarm triggers on unhandled 5xx Lambda execution errors:
+1. A metric alarm triggers on unhandled 5xx Lambda execution errors:
 * **Metric:** AWS/Lambda -> Errors
 * **Evaluation Period:** 1 period of 300 seconds (5 minutes)
 * **Threshold:** > 1 error triggers ALARM state.
 
-### CloudWatch Logs Insights Querying
-
-Because the Go handler utilizes structured log/slog output, logs can be queried directly by field attributes:
-```plaintext
-fields @timestamp, level, msg, product_id, quantity, remaining_stock, error
-| filter ispresent(product_id)
-| sort @timestamp desc
-| limit 20
-```
+2. A metric alarm triggers on failed order email notifications:
+* **Metric:** AWS/SQS -> ApproximateNumberOfMessagesVisible
+* **Evaluation Period:** 1 period of 60 seconds (1 minute).
+* **Threshold:** > 0 messages triggers ALARM state.
 
 ## 🚀 Deployment Instructions
 

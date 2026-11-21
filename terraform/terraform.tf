@@ -43,8 +43,9 @@ module "iam" {
   environment                      = var.environment
   dynamodb_inventory_table_arn     = module.dynamodb.dynamodb_inventory_table_arn
   dynamodb_orders_table_stream_arn = module.dynamodb.dynamodb_orders_table_stream_arn
-  dynamodb_orders_table_arn       = module.dynamodb.dynamodb_orders_table_arn
+  dynamodb_orders_table_arn        = module.dynamodb.dynamodb_orders_table_arn
   sns_topic_arn                    = module.sns.sns_topic_arn
+  pipe_dlq_arn                     = module.pipes.pipe_dlq_arn
 }
 
 module "lambda" {

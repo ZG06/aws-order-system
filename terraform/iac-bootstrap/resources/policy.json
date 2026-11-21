@@ -162,6 +162,20 @@
         {
             "Effect": "Allow",
             "Action": [
+                "sqs:CreateQueue",
+                "sqs:DeleteQueue",
+                "sqs:GetQueueAttributes",
+                "sqs:SetQueueAttributes",
+                "sqs:GetQueueUrl",
+                "sqs:ListQueueTags",
+                "sqs:TagResource",
+                "sqs:UntagResource"
+            ],
+            "Resource": "arn:aws:sqs:us-east-1:049584025934:order-system-*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
                 "pipes:CreatePipe",
                 "pipes:DeletePipe",
                 "pipes:DescribePipe",

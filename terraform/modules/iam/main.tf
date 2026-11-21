@@ -95,6 +95,13 @@ data "aws_iam_policy_document" "notifications_permissions" {
     resources = [var.sns_topic_arn]
     effect    = "Allow"
   }
+  statement {
+    actions = [
+      "sqs:SendMessage"
+    ]
+    resources = [var.pipe_dlq_arn]
+    effect    = "Allow"
+  }
 }
 
 resource "aws_iam_policy" "notifications-policy" {

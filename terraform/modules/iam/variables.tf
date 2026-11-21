@@ -27,3 +27,8 @@ variable "sns_topic_arn" {
   type        = string
   description = "ARN of the SNS topic"
 }
+
+variable "pipe_dlq_arn" {
+  type        = string
+  description = "ARN of the SQS DLQs"
+}
