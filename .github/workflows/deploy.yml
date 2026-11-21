@@ -50,8 +50,14 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4.0.1
 
-      - name: Terraform Init & Apply
+      - name: Terraform Init & Plan
         working-directory: ./terraform
         run: |
           terraform init
-          terraform apply -auto-approve
+          terraform plan -out=tfplan
+
+      # Only apply terraform configuration when pushed/merged to master
+      - name: Terraform Apply
+        working-directory: ./terraform
+        if: github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        run: terraform apply -auto-approve tfplan
