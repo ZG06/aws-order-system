@@ -35,7 +35,7 @@ A serverless microservice built with Go, AWS Lambda, DynamoDB, and API Gateway. 
 ### Application & Runtime Security
 - **VPC-Free Serverless Architecture:** Lambda runs on the AWS public network without having to deploy VPC and manually manage server security (Networking, OS updates, Security Patches). In addition to that, running code on Golang minimizes the cold-start latencies.
 - **DynamoDB Atomic Transactions:** Using DynamoDB ensures high reliability, because if the traffic suddenly spikes, and two identical orders are placed at the same time with only 1 item available in stock, DynamoDB millisecond response and conditional expressions will not allow the items to be ordered. In addition to that, different products have different JSON schemas, and a non-relational database, like DynamoDB, allows storing them without additional complexity.
-- **Rate Limiting & Throttling:** API Gateway throttling burst limit is set to 10 (the token bucket holds 10 tokens), and rate limit is 5 (5 tokens are added to the bucket every second).
+- **Rate Limiting & Throttling:** API Gateway throttling burst limit is set to 10 (the token bucket holds 10 tokens), and rate limit is 5 (5 tokens are added to the bucket every second). This ensures protection from traffic and cost spikes.
 - **No-Code Reliable Notifications:** DynamoDB Streams send a stream to EventBridge Pipes, which saves costs by filtering events (e.g. `INSERT`) and retries failed deliveries automatically. It also doesn't require custom code and maintenance. Then EventBridge sends the stream to SNS, which delivers an email to the administrator.
 
 ### CI/CD Security & Least-Privilege IAM
