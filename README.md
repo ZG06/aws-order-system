@@ -41,6 +41,8 @@ A serverless microservice built with Go, AWS Lambda, DynamoDB, and API Gateway. 
 ### CI/CD Security & Least-Privilege IAM
 - **Keyless Authentication (OIDC):** GitHub Actions authenticates to AWS via OpenID Connect identity provider scoped strictly to this repository, eliminating the need for `AWS_ACCESS_KEY_ID` secrets.
 - **Least-Privilege Policy Generation:** Rather than using broad managed policies like `AdministratorAccess`, `terraform/iac-bootstrap/resources/policy.json` was created by tracking calls with AWS CloudTrail and [iamlive](https://github.com/iann0036/iamlive/), then tightening resource ARNs to this project's specific resources.
+- **Remote State Storage:** An S3 bucket stores both `iac-bootstrap` (for roles and policies) and the main infrastructure Terraform states remotely. It removes the single point of failure and allows sharing the state across multiple machines.
+- **Branch Protection & Automated Plan Checks:** GitHub branch protection ensures the security of the `master` branch by only allowing pushing new code from a separate branch via pull requests after passing automated CI checks (`go test` and `terraform plan`) before merging, while gating `terraform apply` strictly to `master`.
 
 ---
 
@@ -102,6 +104,8 @@ resource "aws_cloudwatch_log_group" "lambda_log_group" {
 * **Metric:** AWS/SQS -> ApproximateNumberOfMessagesVisible
 * **Evaluation Period:** 1 period of 60 seconds (1 minute).
 * **Threshold:** > 0 messages triggers ALARM state.
+
+---
 
 ## 🚀 Deployment Instructions
 
